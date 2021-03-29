@@ -1,0 +1,26 @@
+@import "./colors.scss";
+
+body {
+  margin: 0;
+
+  padding: 5em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-color: $white;
+}
+
+#fileOutput {
+  overflow-x: hidden;
+  white-space: pre;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.App {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+}

@@ -1,0 +1,19 @@
+@import "../../colors.scss";
+
+#drop_zone {
+  // background-color: $light;
+
+  border: 2px dashed $primary;
+  border-radius: 1em;
+
+  color: $primary;
+
+  text-align: center;
+
+  svg {
+    fill: $primary;
+    display: block;
+    width: 100px;
+    margin: 0 auto;
+  }
+}
