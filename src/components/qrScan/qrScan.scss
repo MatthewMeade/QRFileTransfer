@@ -1,9 +1,9 @@
 @import "../../styles/common.scss";
 
-#fileUpload {
+#qrScan {
   text-align: center;
 
-  #drop_zone {
+  #qrScanContent {
     svg {
       fill: $primary;
       width: 100px;
@@ -15,11 +15,10 @@
     padding-right: 1em;
   }
 
-  &.dragging,
   &:hover {
-    #drop_zone {
-      border-color: $secondary;
-      background-color: lighten($primary, 43%);
+    #qrScanContent {
+      border: 5px dashed $secondary;
+      background-color: lighten($primary, 40%);
 
       svg {
         transform: scale(1.2);
@@ -28,17 +27,6 @@
       h2 {
         color: $primary;
       }
-    }
-  }
-
-  &:hover:not(.dragging) {
-    .browse {
-      color: $primary;
-    }
-  }
-  &.dragging {
-    .drop {
-      color: $primary;
     }
   }
 }

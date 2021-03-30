@@ -1,12 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./fileUpload.scss";
 
-import FileUploadIcon from "../../icons/fileUpload";
+import FileUploadIcon from "../icons/fileUpload";
 
 import FilesDB from "../../FilesDB";
 
 export default function FileUpload() {
   const input = useRef(null);
+
+  const [isDragging, setDragging] = useState(false);
 
   useEffect(() => {
     const element = document.createElement("input");
@@ -25,6 +27,7 @@ export default function FileUpload() {
 
   const onDrop = (event) => {
     event.preventDefault();
+    setDragging(false);
 
     let files;
 
@@ -38,17 +41,22 @@ export default function FileUpload() {
   };
 
   return (
-    <div
-      id="drop_zone"
-      onDrop={(e) => onDrop(e)}
-      onDragOver={(e) => e.preventDefault()}
-      onClick={(e) => input.current.click()}
-    >
-      <h2>Upload a file</h2>
+    <div id="fileUpload" className={`box--shadow ${isDragging ? "dragging" : "not-dragging"}`}>
+      <div
+        id="drop_zone"
+        className="box--dashed"
+        onDrop={(e) => onDrop(e)}
+        onDragOver={() => setDragging(true)}
+        onDragLeave={() => setDragging(false)}
+        onDragEnd={() => setDragging(false)}
+        onClick={(e) => input.current.click()}
+      >
+        <FileUploadIcon />
 
-      <FileUploadIcon />
-
-      <p>Drag and drop your file or click here to upload</p>
+        {/* <span className="drop">Drop</span> files or <span className="browse">Browse</span> */}
+        <h2>Upload files</h2>
+        <p>Your files will be stored in the browser</p>
+      </div>
     </div>
   );
 }

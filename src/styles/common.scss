@@ -1,0 +1,25 @@
+@import "./colors.scss";
+
+h2 {
+  color: $secondary;
+}
+
+p {
+  color: $gray;
+}
+
+.box {
+  background-color: $white;
+  border-radius: 1.5em;
+  padding: 2em;
+}
+
+.box--shadow {
+  @extend .box;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+.box--dashed {
+  @extend .box;
+  border: 5px dashed $lightgray;
+}
