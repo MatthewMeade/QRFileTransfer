@@ -47,7 +47,7 @@ function FileListItem({ file }) {
       <span className="type">{file.type}</span>
 
       <span className="buttons">
-        <span>
+        <span onClick={() => FilesDB.deleteFile(file.id)}>
           <DeleteIcon />
         </span>
         <span onClick={() => downloadFile(file)}>

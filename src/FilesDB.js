@@ -52,6 +52,13 @@ export default class FileDB {
     FileDB.setReactState(fileMetaData);
   }
 
+  static async deleteFile(id) {
+    await FileDB.db.delete("files", id);
+    await FileDB.db.delete("filesMeta", id);
+
+    this.updateReactState();
+  }
+
   static async clearDB() {
     await FileDB.db.clear("filesMeta");
     await FileDB.db.clear("files");
