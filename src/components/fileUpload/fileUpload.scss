@@ -19,7 +19,7 @@
   &:hover {
     #drop_zone {
       border-color: $secondary;
-      background-color: lighten($primary, 43%);
+      background-color: $highlight;
 
       svg {
         transform: scale(1.2);
