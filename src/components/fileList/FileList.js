@@ -47,11 +47,15 @@ function FileListItem({ file }) {
       <span className="type">{file.type}</span>
 
       <span className="buttons">
-        <DeleteIcon />
+        <span>
+          <DeleteIcon />
+        </span>
         <span onClick={() => downloadFile(file)}>
           <DownloadIcon />
         </span>
-        <SendIcon />
+        <span>
+          <SendIcon />
+        </span>
       </span>
     </div>
   );
