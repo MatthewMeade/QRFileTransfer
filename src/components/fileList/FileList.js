@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import streamSaver from "streamsaver";
 
 import "./fileList.scss";
 
@@ -47,7 +48,9 @@ function FileListItem({ file }) {
 
       <span className="buttons">
         <DeleteIcon />
-        <DownloadIcon onClick={() => downloadFile(file)} />
+        <span onClick={() => downloadFile(file)}>
+          <DownloadIcon />
+        </span>
         <SendIcon />
       </span>
     </div>
@@ -55,8 +58,18 @@ function FileListItem({ file }) {
 }
 
 function downloadFile(file) {
-  FilesDB.getFileById(file.id).then(({ data }) => {
-    const elem = document.createElement("a");
+  FilesDB.getFileByID(file.id).then(({ data }) => {
+    const fileStream = streamSaver.createWriteStream(file.name, {
+      size: file.size,
+    });
+
+    data
+      .stream()
+      .pipeTo(fileStream)
+      .then((...all) => {
+        console.log(all);
+      })
+      .catch((e) => console.log(e));
   });
 }
 
