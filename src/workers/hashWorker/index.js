@@ -1,5 +1,5 @@
 import hashWorker from "worker-loader!./hashWorker.js"; //eslint-disable-line
-import { hashBuffer } from "./util";
+import { hashArrayBuffer } from "./util";
 
 const workerPool = [];
 
@@ -48,21 +48,21 @@ const getWorker = async () => {
   return workerPool.pop();
 };
 
-export const hashArrayBuffer = async (aB, fileName) => {
-  if (aB.byteLength < HASH_BATCH_SIZE) {
-    return hashBuffer(aB); // Don't use workers for small files, not worth the overhead
+export const hashBlob = async (aB, fileName) => {
+  if (aB.size < HASH_BATCH_SIZE) {
+    return hashArrayBuffer(aB); // Don't use workers for small files, not worth the overhead
   } else {
-    return hashFileArrayBuffer(aB, fileName);
+    return hashFileBlob(aB, fileName);
   }
 };
 
-const hashFileArrayBuffer = async (aBuffer) => {
+const hashFileBlob = async (aBuffer) => {
   const promises = [];
 
   LOG_TIME && console.time("Hashing");
 
-  for (let i = 0; i < aBuffer.byteLength; i += HASH_BATCH_SIZE) {
-    let data = aBuffer.slice(i, i + HASH_BATCH_SIZE);
+  for (let i = 0; i < aBuffer.size; i += HASH_BATCH_SIZE) {
+    let data = await aBuffer.slice(i, i + HASH_BATCH_SIZE).arrayBuffer();
 
     const curWorker = await getWorker();
     const hash = curWorker.postMessage(data, [data]);

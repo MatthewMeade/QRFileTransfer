@@ -1,6 +1,6 @@
 import { openDB } from "idb";
 
-import { hashArrayBuffer } from "./workers/hashWorker";
+import { hashBlob } from "./workers/hashWorker";
 
 export default class FileDB {
   static async initialize(setReactState) {
@@ -66,16 +66,17 @@ const processFiles = async (files) => {
       return f;
     }
 
-    let data = await readFileAsync(f);
+    // const data = await f.arrayBuffer();
+    const data = f;
 
-    const id = await hashArrayBuffer(data, f.name);
+    const id = await hashBlob(data, f.name);
 
     const metaData = {
       id,
       name: f.name,
       type: f.type,
       timestamp: Date.now(),
-      size: data.byteLength,
+      size: data.size,
     };
 
     return {
@@ -92,6 +93,20 @@ const readFileAsync = (file) => {
   return new Promise((res) => {
     const fR = new FileReader();
     fR.onload = (e) => res(e.target.result);
+    addListeners(fR);
     fR.readAsArrayBuffer(file);
   });
 };
+
+function handleEvent(event) {
+  console.log(event);
+}
+
+function addListeners(reader) {
+  reader.addEventListener("loadstart", handleEvent);
+  // reader.addEventListener("load", handleEvent);
+  reader.addEventListener("loadend", handleEvent);
+  reader.addEventListener("progress", handleEvent);
+  reader.addEventListener("error", handleEvent);
+  reader.addEventListener("abort", handleEvent);
+}

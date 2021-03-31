@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
+
 import "./fileList.scss";
 
 import { FilesContext } from "../../App";
+import FilesDB from "../../FilesDB";
 
-// import FilesDB from "../../FilesDB";
 // import QRCodeIcon from "../icons/qrCode";
 import ImageIcon from "../icons/imageIcon";
 import FileIcon from "../icons/fileIcon";
@@ -46,11 +47,17 @@ function FileListItem({ file }) {
 
       <span className="buttons">
         <DeleteIcon />
-        <DownloadIcon />
+        <DownloadIcon onClick={() => downloadFile(file)} />
         <SendIcon />
       </span>
     </div>
   );
+}
+
+function downloadFile(file) {
+  FilesDB.getFileById(file.id).then(({ data }) => {
+    const elem = document.createElement("a");
+  });
 }
 
 const words = ["B", "KB", "MB", "GB"];

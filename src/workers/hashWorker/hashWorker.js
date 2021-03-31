@@ -1,3 +1,3 @@
-import { hashBuffer } from "./util";
+import { hashArrayBuffer } from "./util";
 
-onmessage = ({ data }) => postMessage({ hash: hashBuffer(data) });
+onmessage = ({ data }) => postMessage({ hash: hashArrayBuffer(data) });
