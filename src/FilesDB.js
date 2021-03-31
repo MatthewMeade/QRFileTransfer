@@ -73,7 +73,6 @@ const processFiles = async (files) => {
       return f;
     }
 
-    // const data = await f.arrayBuffer();
     const data = f;
 
     const id = await hashBlob(data, f.name);
@@ -95,25 +94,3 @@ const processFiles = async (files) => {
 
   return await Promise.all(promises);
 };
-
-const readFileAsync = (file) => {
-  return new Promise((res) => {
-    const fR = new FileReader();
-    fR.onload = (e) => res(e.target.result);
-    addListeners(fR);
-    fR.readAsArrayBuffer(file);
-  });
-};
-
-function handleEvent(event) {
-  console.log(event);
-}
-
-function addListeners(reader) {
-  reader.addEventListener("loadstart", handleEvent);
-  // reader.addEventListener("load", handleEvent);
-  reader.addEventListener("loadend", handleEvent);
-  reader.addEventListener("progress", handleEvent);
-  reader.addEventListener("error", handleEvent);
-  reader.addEventListener("abort", handleEvent);
-}

@@ -48,11 +48,11 @@ const getWorker = async () => {
   return workerPool.pop();
 };
 
-export const hashBlob = async (aB, fileName) => {
-  if (aB.size < HASH_BATCH_SIZE) {
-    return hashArrayBuffer(aB); // Don't use workers for small files, not worth the overhead
+export const hashBlob = async (file) => {
+  if (file.size < HASH_BATCH_SIZE) {
+    return hashArrayBuffer(await file.arrayBuffer()); // Don't use workers for small files, not worth the overhead
   } else {
-    return hashFileBlob(aB, fileName);
+    return hashFileBlob(file);
   }
 };
 
