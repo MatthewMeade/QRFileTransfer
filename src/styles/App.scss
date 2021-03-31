@@ -19,5 +19,13 @@ body {
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
+
+    #fileList {
+      grid-column: 1;
+    }
   }
+}
+
+#fileList {
+  grid-column: 1 / span 2;
 }

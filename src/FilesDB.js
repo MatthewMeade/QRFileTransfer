@@ -35,12 +35,12 @@ export default class FileDB {
     return Promise.all(files.map((f) => FileDB.addFile(f)));
   }
 
-  static async getFileByName(name) {
-    return FileDB.db.get("files", name);
+  static async getFileByID(id) {
+    return FileDB.db.get("files", id);
   }
 
-  static async getFileMetaDataByName(name) {
-    return FileDB.db.get("filesMeta", name);
+  static async getFileMetaDataByID(id) {
+    return FileDB.db.get("filesMeta", id);
   }
 
   static async getAllFilesMetaData() {
@@ -75,6 +75,7 @@ const processFiles = async (files) => {
       name: f.name,
       type: f.type,
       timestamp: Date.now(),
+      size: data.byteLength,
     };
 
     return {

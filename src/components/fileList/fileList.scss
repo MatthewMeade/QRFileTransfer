@@ -1,0 +1,135 @@
+@import "../../styles/common.scss";
+
+#fileList {
+  display: grid;
+  row-gap: 1em;
+
+  #fileListItem {
+    display: grid;
+    grid-auto-flow: column;
+
+    column-gap: 10px;
+
+    @media (max-width: 900px) {
+      .icon {
+        display: none;
+      }
+
+      h3 {
+        grid-area: N;
+      }
+
+      .fileSize {
+        grid-area: S;
+      }
+
+      .timestamp {
+        grid-area: D;
+      }
+
+      .type {
+        grid-area: T;
+      }
+
+      .buttons {
+        grid-area: B;
+      }
+
+      svg {
+        height: 50px;
+      }
+    }
+
+    @media (min-width: 900px) {
+      grid-template-columns: auto 2fr 1fr 2fr 2fr 1fr;
+    }
+
+    @media (max-width: 900px) and (min-width: 650px) {
+      grid-template-areas:
+        "N D B"
+        "S T B";
+    }
+
+    @media (max-width: 650px) {
+      text-align: center;
+      grid-template-areas:
+        "N N N"
+        "S D T"
+        "B B B";
+
+      .icon {
+        display: none;
+      }
+
+      h3 {
+        grid-area: N;
+        font-size: 1.5em !important;
+        padding-bottom: 10px;
+      }
+
+      .fileSize {
+        grid-area: S;
+      }
+
+      .timestamp {
+        grid-area: D;
+      }
+
+      .type {
+        grid-area: T;
+      }
+
+      .buttons {
+        grid-area: B;
+        padding-top: 2em;
+      }
+
+      svg {
+        height: 45px;
+      }
+    }
+
+    h3 {
+      padding: none;
+      margin: 0;
+      color: $primary;
+      display: inline-block;
+      font-size: 1em;
+    }
+
+    span {
+      color: $gray;
+    }
+
+    svg {
+      fill: $gray;
+      display: inline-block;
+    }
+
+    .buttons {
+      display: flex;
+      flex-flow: row;
+
+      svg {
+        flex-grow: 1;
+        transition: transform 0.2s, fill 0.2s;
+
+        &:hover {
+          transform: scale(1.75);
+
+          &.deleteIcon {
+            fill: red;
+          }
+
+          &.downloadIcon {
+            fill: $secondary;
+          }
+
+          &.sendIcon {
+            fill: $primary;
+          }
+        }
+      }
+    }
+  }
+}

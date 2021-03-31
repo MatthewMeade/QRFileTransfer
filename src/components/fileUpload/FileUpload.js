@@ -46,14 +46,22 @@ export default function FileUpload() {
         id="drop_zone"
         className="box--dashed"
         onDrop={(e) => onDrop(e)}
-        onDragOver={() => setDragging(true)}
-        onDragLeave={() => setDragging(false)}
-        onDragEnd={() => setDragging(false)}
-        onClick={(e) => input.current.click()}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={(e) => {
+          e.preventDefault();
+          setDragging(false);
+        }}
+        onDragEnd={(e) => {
+          e.preventDefault();
+          setDragging(false);
+        }}
+        onClick={() => input.current.click()}
       >
         <FileUploadIcon />
 
-        {/* <span className="drop">Drop</span> files or <span className="browse">Browse</span> */}
         <h2>Upload files</h2>
         <p>Your files will be stored in the browser</p>
       </div>

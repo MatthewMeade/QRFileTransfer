@@ -3,6 +3,7 @@ import "./styles/App.scss";
 
 import FileUpload from "./components/fileUpload/FileUpload";
 import QRScan from "./components/qrScan/QRScan";
+import FileList from "./components/fileList/FileList";
 
 import FilesDB from "./FilesDB";
 
@@ -16,11 +17,11 @@ function App() {
   }, []);
 
   return (
-    <FilesContext.Provider value={{ files }}>
+    <FilesContext.Provider value={files}>
       <div className="App">
         <FileUpload />
         <QRScan />
-        {/* <div id="fileOutput">{JSON.stringify(files, null, 2)}</div> */}
+        <FileList />
       </div>
     </FilesContext.Provider>
   );
