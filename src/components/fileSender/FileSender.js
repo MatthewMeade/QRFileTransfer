@@ -23,7 +23,7 @@ export default function QRGenerator({ sendingFiles: filesMeta, cancel }) {
     <div id="fileSender" className="box--shadow">
       <button onClick={() => cancel()}>Go Back</button>
       <p>File Info:</p>
-      <pre style={{ width: "80vw", overflow: "hidden" }}>{JSON.stringify(codes, null, 2)}</pre>
+      {/* <pre style={{ width: "80vw", overflow: "hidden" }}>{JSON.stringify(codes, null, 2)}</pre> */}
 
       {!codes.length && <p>Loading File Data...</p>}
 
@@ -39,7 +39,7 @@ export default function QRGenerator({ sendingFiles: filesMeta, cancel }) {
               <p>Data:</p>
 
               {f.dataCodes.map((src, i) => (
-                <div key={i} style={{ padding: "5em 0" }}>
+                <div key={i} style={{ padding: "10em 0" }}>
                   <img src={src} alt="Should be a QR code here" />
                 </div>
               ))}

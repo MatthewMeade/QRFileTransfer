@@ -85,7 +85,7 @@ const processFiles = async (files) => {
     const metaData = {
       id,
       name: f.name,
-      type: f.type,
+      type: f.type || "Unknown",
       timestamp: Date.now(),
       size: data.size,
     };

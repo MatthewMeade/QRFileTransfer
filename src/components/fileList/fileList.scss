@@ -45,13 +45,14 @@
     }
 
     @media (min-width: 1000px) {
-      grid-template-columns: auto 2fr 1fr 2fr 2fr 1fr;
+      grid-template-columns: auto 3fr 1fr 1fr 2fr 1fr;
     }
 
     @media (max-width: 1000px) and (min-width: 650px) {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       grid-template-areas:
-        "N D B"
-        "S T B";
+        "N N N B"
+        "S D T B";
     }
 
     @media (max-width: 650px) {
