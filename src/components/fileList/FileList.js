@@ -17,10 +17,10 @@ import DeleteIcon from "../icons/deleteIcon";
 import DownloadIcon from "../icons/downloadIcon";
 import SendIcon from "../icons/sendIcon";
 
-export default function FileList() {
+export default function FileList({ sendFiles }) {
   const files = useContext(FilesContext);
 
-  const items = files.map((file) => <FileListItem file={file} key={file.name} />);
+  const items = files.map((file) => <FileListItem file={file} key={file.name} sendFiles={sendFiles} />);
 
   return (
     <div id="fileList" className="">
@@ -29,7 +29,7 @@ export default function FileList() {
   );
 }
 
-function FileListItem({ file }) {
+function FileListItem({ file, sendFiles }) {
   const date = new Date(file.timestamp);
 
   return (
@@ -53,7 +53,7 @@ function FileListItem({ file }) {
         <span onClick={() => downloadFile(file)}>
           <DownloadIcon />
         </span>
-        <span>
+        <span onClick={() => sendFiles(file)}>
           <SendIcon />
         </span>
       </span>

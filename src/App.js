@@ -6,11 +6,13 @@ import QRScan from "./components/qrScan/QRScan";
 import FileList from "./components/fileList/FileList";
 
 import FilesDB from "./FilesDB";
+import FileSender from "./components/fileSender/FileSender";
 
 export const FilesContext = createContext([]);
 
 function App() {
   const [files, setFiles] = useState([]);
+  const [sendingFiles, setSendingFiles] = useState(null);
 
   useEffect(() => {
     FilesDB.initialize(setFiles);
@@ -21,7 +23,11 @@ function App() {
       <div className="App">
         <FileUpload />
         <QRScan />
-        <FileList />
+        {sendingFiles ? (
+          <FileSender sendingFiles={sendingFiles} cancel={() => setSendingFiles(null)} />
+        ) : (
+          <FileList sendFiles={setSendingFiles} />
+        )}
       </div>
     </FilesContext.Provider>
   );

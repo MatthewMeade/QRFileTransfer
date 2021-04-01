@@ -35,6 +35,11 @@ export default class FileDB {
     return Promise.all(files.map((f) => FileDB.addFile(f)));
   }
 
+  static async getFilesByID(ids) {
+    const promises = ids.map((i) => FileDB.getFileByID(i));
+    return Promise.all(promises);
+  }
+
   static async getFileByID(id) {
     return FileDB.db.get("files", id);
   }
