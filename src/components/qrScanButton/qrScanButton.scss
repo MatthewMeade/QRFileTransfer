@@ -1,9 +1,9 @@
 @import "../../styles/common.scss";
 
-#qrScan {
+#qrScanButton {
   text-align: center;
 
-  #qrScanContent {
+  #qrScanButtonContent {
     svg {
       fill: $primary;
       width: 100px;
@@ -16,7 +16,7 @@
   }
 
   &:hover {
-    #qrScanContent {
+    #qrScanButtonContent {
       border: 5px dashed $secondary;
       background-color: $highlight;
 

@@ -2,11 +2,12 @@ import React, { useEffect, createContext, useState } from "react";
 import "./styles/App.scss";
 
 import FileUpload from "./components/fileUpload/FileUpload";
-import QRScan from "./components/qrScan/QRScan";
+import QRScanButton from "./components/qrScanButton/QRScanButton";
 import FileList from "./components/fileList/FileList";
 
 import FilesDB from "./FilesDB";
 import FileSender from "./components/fileSender/FileSender";
+import FileReader from "./components/fileReader/FileReader";
 
 export const FilesContext = createContext([]);
 
@@ -18,7 +19,11 @@ function App() {
   let body;
 
   if (isReading) {
-    // TODO
+    body = (
+      <span className="readingPage">
+        <FileReader cancel={() => setIsReading(false)} />
+      </span>
+    );
   } else if (sendingFiles) {
     body = (
       <span className="sendingPage">
@@ -29,7 +34,7 @@ function App() {
     body = (
       <span className="homePage">
         <FileUpload />
-        <QRScan />
+        <QRScanButton startReading={() => setIsReading(true)} />
         <FileList sendFiles={setSendingFiles} />
       </span>
     );
