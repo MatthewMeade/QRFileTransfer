@@ -13,6 +13,27 @@ export const FilesContext = createContext([]);
 function App() {
   const [files, setFiles] = useState([]);
   const [sendingFiles, setSendingFiles] = useState(null);
+  const [isReading, setIsReading] = useState(false);
+
+  let body;
+
+  if (isReading) {
+    // TODO
+  } else if (sendingFiles) {
+    body = (
+      <span className="sendingPage">
+        <FileSender sendingFiles={sendingFiles} cancel={() => setSendingFiles(null)} />
+      </span>
+    );
+  } else {
+    body = (
+      <span className="homePage">
+        <FileUpload />
+        <QRScan />
+        <FileList sendFiles={setSendingFiles} />
+      </span>
+    );
+  }
 
   useEffect(() => {
     FilesDB.initialize(setFiles);
@@ -20,15 +41,7 @@ function App() {
 
   return (
     <FilesContext.Provider value={files}>
-      <div className="App">
-        <FileUpload />
-        <QRScan />
-        {sendingFiles ? (
-          <FileSender sendingFiles={sendingFiles} cancel={() => setSendingFiles(null)} />
-        ) : (
-          <FileList sendFiles={setSendingFiles} />
-        )}
-      </div>
+      <div className="App">{body}</div>
     </FilesContext.Provider>
   );
 }

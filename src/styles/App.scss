@@ -12,10 +12,14 @@ body {
   background-color: $light;
 }
 
-.App {
+.homePage {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 2em;
+
+  #fileList {
+    grid-column: 1 / span 2;
+  }
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
@@ -24,9 +28,4 @@ body {
       grid-column: 1;
     }
   }
-}
-
-#fileSender,
-#fileList {
-  grid-column: 1 / span 2;
 }
