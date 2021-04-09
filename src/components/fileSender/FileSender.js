@@ -35,7 +35,7 @@ export default function QRGenerator({ sendingFiles: filesMeta, cancel }) {
             <h3>{f.metaData.name}</h3>
             <div>
               <p>MetaData:</p>
-              {/* <img src={f.metaCode} alt="Should be a QR code here" /> */}
+              <img src={f.metaCode} alt="Should be a QR code here" />
               <p>Data:</p>
 
               {f.dataCodes.map((src, i) => (

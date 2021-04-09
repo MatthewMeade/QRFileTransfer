@@ -8,7 +8,7 @@ const qrOptions = {
   margin: 1,
 };
 
-const PART_SIZE = 1000;
+export const PART_SIZE = 500;
 export default async function generateQRCodes(fileIDs) {
   const files = await FilesDB.getFilesByID(fileIDs);
 

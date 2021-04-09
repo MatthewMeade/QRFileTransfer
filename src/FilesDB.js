@@ -78,21 +78,22 @@ const processFiles = async (files) => {
       return f;
     }
 
-    const data = f;
-
-    const id = await hashBlob(data, f.name);
+    let id = f.hash;
+    if (!id) {
+      id = await hashBlob(f, f.name);
+    }
 
     const metaData = {
       id,
       name: f.name,
       type: f.type || "Unknown",
       timestamp: Date.now(),
-      size: data.size,
+      size: f.size,
     };
 
     return {
       id,
-      data,
+      data: f,
       metaData,
     };
   });
