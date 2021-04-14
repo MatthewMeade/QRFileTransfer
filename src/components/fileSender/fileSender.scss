@@ -1,1 +1,162 @@
 @import "../../styles/common.scss";
+
+@function max($numbers...) {
+  @return m#{a}x(#{$numbers});
+}
+
+@function min($numbers...) {
+  @return m#{i}n(#{$numbers});
+}
+
+#fileSender {
+  display: grid;
+  gap: 1em;
+
+  #fsHeader {
+    display: grid;
+    grid-template-columns: 1fr 5fr 1fr;
+    // border-bottom: 5px dashed $lightgray;
+    padding: 0.5em;
+    align-items: center;
+    font-weight: bold;
+
+    .btn {
+      padding: 1em;
+      justify-self: left;
+      border-radius: 0.5em;
+      background-color: $white;
+      cursor: pointer;
+      color: $gray;
+      transition: color 0.25s;
+
+      svg {
+        fill: $gray;
+        transition: fill 0.25s;
+
+        position: relative;
+        top: 5px;
+      }
+
+      &:hover {
+        color: $primary;
+        svg {
+          fill: $primary;
+        }
+      }
+    }
+
+    h2 {
+      padding: none;
+      margin: 0;
+      text-align: center;
+      font-size: 2em;
+    }
+
+    .statusText {
+      justify-self: right;
+    }
+  }
+
+  .qrContainer {
+    display: grid;
+    justify-content: center;
+
+    text-align: center;
+    img {
+      display: block;
+      margin: 0 auto;
+
+      width: 100vh;
+      max-width: 50vh;
+    }
+
+    p {
+      font-size: 2em;
+      margin: 0;
+    }
+  }
+
+  .metaDataReturn {
+    color: $secondary;
+    margin: 1em;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+  .controls {
+    max-width: min(90vw, 50vh);
+    display: grid;
+    grid-auto-flow: column;
+
+    @media (max-width: 900px) {
+      grid-auto-flow: row;
+    }
+
+    padding: 1em;
+    user-select: none;
+
+    .curIndexInput {
+      &.grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      input {
+        font-size: 1em;
+
+        font-weight: bold;
+        color: $secondary;
+        border: none;
+
+        text-align: right;
+        justify-self: right;
+        position: relative;
+        top: 3px;
+
+        width: 100px;
+      }
+
+      .total {
+        text-align: left;
+        justify-self: left;
+        padding-left: 12px;
+      }
+    }
+  }
+
+  .button,
+  .curIndexInput {
+    font-weight: bold;
+    color: $secondary;
+    padding: 20px;
+    border-radius: 2em;
+    font-size: 2em;
+  }
+
+  .button {
+    &:hover:not(&.disiabled),
+    &.active:not(&.disiabled) {
+      cursor: pointer;
+
+      color: $primary;
+      text-decoration: underline;
+
+      background-color: $highlight;
+    }
+
+    &.disabled {
+      color: $gray;
+      background-color: $white;
+      text-decoration: none;
+    }
+
+    &.active {
+      background-color: $secondary;
+      color: $white;
+    }
+  }
+}

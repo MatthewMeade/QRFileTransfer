@@ -1,51 +1,153 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-import generateQRCodes from "./qrGenerator";
+import QRGenerator from "./qrGenerator";
 
 import "./fileSender.scss";
+import BackIcon from "../icons/backIcon";
 
-export default function QRGenerator({ sendingFiles: filesMeta, cancel }) {
-  if (!Array.isArray(filesMeta)) filesMeta = [filesMeta];
+export default function FileSender({ file, cancel }) {
+  const generator = useRef(null);
+  const gen = generator.current;
 
-  const [codes, setcodes] = useState([]);
-
-  const useEffectDepencyKey = JSON.stringify(filesMeta);
+  // const [metaDataCode, setmetaDataCode] = useState(null);
+  const [curCodeIndex, setCurCodeIndex] = useState(-1);
+  const [curCode, setCurCode] = useState(null);
+  const [isAutoRunning, setAuto] = useState(false);
 
   useEffect(() => {
-    if (filesMeta[0] === null) {
+    if (!file) {
       return;
     }
 
-    generateQRCodes(filesMeta.map((f) => f.id)).then((result) => setcodes(result));
-  }, [useEffectDepencyKey]); // eslint-disable-line react-hooks/exhaustive-deps
+    generator.current = new QRGenerator(file.id, setCurCode);
+  }, [file]);
+
+  const nextCode = async (next) => {
+    next = next ?? (curCodeIndex ?? -1) + 1;
+    if (next > generator.current.totalParts - 1) {
+      next = 0;
+    }
+    const code = await generator.current.getPartCode(next);
+    setCurCodeIndex(next);
+    setCurCode(code);
+  };
+
+  const prevCode = async () => {
+    let next = (curCodeIndex ?? 1) + -1;
+    if (next < 0) {
+      next = generator.current.totalParts - 1;
+    }
+    const code = await generator.current.getPartCode(next);
+    setCurCodeIndex(next);
+    setCurCode(code);
+  };
+
+  useInterval(() => {
+    if (isAutoRunning) {
+      nextCode();
+    }
+  }, 500);
+
+  const controls = [];
+
+  if (!isAutoRunning && curCodeIndex >= 0) {
+    controls.push(
+      <span key="prev" className="prev button" onClick={() => prevCode()}>
+        Previous
+      </span>
+    );
+  } else if (curCodeIndex !== -1) {
+    controls.push(
+      <span key="prev" className="prev button disabled">
+        Previous
+      </span>
+    );
+  }
+
+  if (curCodeIndex >= 0) {
+    controls.push(
+      <span key="curIndexInput" className="curIndexInput grid">
+        <input
+          type="number"
+          value={curCodeIndex || 0}
+          onChange={(e) => nextCode(parseInt(e.target.value || "0"))}
+          min={0}
+          max={gen.totalParts - 1}
+        />
+        <span>/</span>
+        <span className="total"> {gen.totalParts - 1}</span>
+      </span>
+    );
+  }
+
+  if (!isAutoRunning) {
+    controls.push(
+      <span key="next" className="next button" onClick={() => nextCode()}>
+        Next
+      </span>
+    );
+  } else {
+    controls.push(
+      <span key="next" className="next button disabled">
+        Next
+      </span>
+    );
+  }
+
+  const controlsElem = <div className="controls">{controls}</div>;
 
   return (
-    <div id="fileSender" className="box--shadow">
-      <button onClick={() => cancel()}>Go Back</button>
-      <p>File Info:</p>
-      {/* <pre style={{ width: "80vw", overflow: "hidden" }}>{JSON.stringify(codes, null, 2)}</pre> */}
+    <div id="fileSender">
+      <div id="fsHeader" className="box--shadow">
+        <span onClick={() => cancel()} className="btn">
+          <BackIcon /> Back
+        </span>
 
-      {!codes.length && <p>Loading File Data...</p>}
+        <h2>
+          Sending <wbr />
+          {file.name}
+        </h2>
 
-      {codes.length && <p>Read {codes.length} files</p>}
+        {!curCode && <p className="statusText">Initializing...</p>}
+      </div>
 
-      {codes.length &&
-        codes.map((f) => (
-          <div key={f.id}>
-            <h3>{f.metaData.name}</h3>
-            <div>
-              <p>MetaData:</p>
-              <img src={f.metaCode} alt="Should be a QR code here" />
-              <p>Data:</p>
+      <div className="box--shadow qrContainer">
+        {curCodeIndex === -1 && <p>Meta Data:</p>}
+        <img src={curCode} alt="Should be a QR code here" />
+        {controlsElem}
 
-              {f.dataCodes.map((src, i) => (
-                <div key={i} style={{ padding: "10em 0" }}>
-                  <img src={src} alt="Should be a QR code here" />
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+        {curCodeIndex >= 0 && (
+          <span
+            className={`auto button ${isAutoRunning ? "active" : "disabled"}`}
+            onClick={() => setAuto(!isAutoRunning)}
+          >
+            {isAutoRunning ? "Stop" : "Start"} Auto Next
+          </span>
+        )}
+
+        {curCodeIndex !== -1 && !isAutoRunning && (
+          <span className="metaDataReturn" onClick={() => nextCode(-1)}>
+            Return To Meta Data
+          </span>
+        )}
+      </div>
     </div>
   );
+}
+
+// Todo: Refactor this
+function useInterval(callback, delay) {
+  const intervalId = React.useRef(null);
+  const savedCallback = React.useRef(callback);
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  });
+  React.useEffect(() => {
+    const tick = () => savedCallback.current();
+    if (typeof delay === "number") {
+      intervalId.current = window.setInterval(tick, delay);
+      return () => window.clearInterval(intervalId.current);
+    }
+  }, [delay]);
+  return intervalId.current;
 }

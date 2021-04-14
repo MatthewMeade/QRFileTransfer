@@ -3,43 +3,62 @@ import FilesDB from "../../FilesDB";
 
 const qrOptions = {
   errorCorrectionLevel: "L",
-  type: "image/png",
+  type: "image/webp",
   quality: 1,
   margin: 1,
 };
 
 export const PART_SIZE = 500;
-export default async function generateQRCodes(fileIDs) {
-  const files = await FilesDB.getFilesByID(fileIDs);
+export default class QRGenerator {
+  constructor(fileID, setmetaDataCode) {
+    this.fileID = fileID;
+    this.codeCache = [];
+    this.setmetaDataCode = setmetaDataCode;
 
-  return Promise.all(
-    files.map(async (f) => {
-      const ab = await f.data.arrayBuffer();
-      const steps = Math.ceil(ab.byteLength / PART_SIZE);
+    this.initializeFile();
+  }
 
-      const metaCode = await QRCode.toDataURL(JSON.stringify({ ...f.metaData, numParts: steps }), qrOptions);
+  get isReady() {
+    return !!this.metaDataCode;
+  }
 
-      const promises = [];
-      for (let i = 0; i < steps; i++) {
-        const fileData = new Uint8ClampedArray(ab.slice(i * PART_SIZE, (i + 1) * PART_SIZE));
-        const partData = new Uint8ClampedArray(fileData.length + 3);
+  async initializeFile() {
+    this.file = await FilesDB.getFileByID(this.fileID);
+    this.ab = await this.file.data.arrayBuffer();
 
-        const part = i.toString(2).padStart(24, "0");
+    this.totalParts = Math.ceil(this.ab.byteLength / PART_SIZE);
+    this.metaDataCode = await QRCode.toDataURL(
+      JSON.stringify({ ...this.file.metaData, numParts: this.totalParts }),
+      qrOptions
+    );
 
-        partData[0] = parseInt(part.slice(0, 8), 2);
-        partData[1] = parseInt(part.slice(8, 16), 2);
-        partData[2] = parseInt(part.slice(16, 24), 2);
+    this.setmetaDataCode(this.metaDataCode);
+  }
 
-        partData.set(fileData, 3);
+  async getPartCode(n) {
+    if (n < 0) {
+      return this.metaDataCode;
+    }
 
-        promises.push(QRCode.toDataURL([{ data: partData, mode: "byte" }], qrOptions));
-      }
+    if (this.codeCache[n]) {
+      return this.codeCache[n];
+    }
 
-      console.time("QR Gen");
-      const dataCodes = await Promise.all(promises);
-      console.timeEnd("QR Gen");
+    const fileData = new Uint8ClampedArray(this.ab.slice(n * PART_SIZE, (n + 1) * PART_SIZE));
+    const partData = new Uint8ClampedArray(fileData.length + 3);
 
-      return { ...f, metaCode, dataCodes };
-    })
-  );
+    const part = n.toString(2).padStart(24, "0");
+
+    partData[0] = parseInt(part.slice(0, 8), 2);
+    partData[1] = parseInt(part.slice(8, 16), 2);
+    partData[2] = parseInt(part.slice(16, 24), 2);
+
+    partData.set(fileData, 3);
+
+    const result = await QRCode.toDataURL([{ data: partData, mode: "byte" }], qrOptions);
+
+    this.codeCache[n] = result;
+
+    return result;
+  }
 }

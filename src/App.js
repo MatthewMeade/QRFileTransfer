@@ -13,7 +13,7 @@ export const FilesContext = createContext([]);
 
 function App() {
   const [files, setFiles] = useState([]);
-  const [sendingFiles, setSendingFiles] = useState(null);
+  const [sendingFile, setSendingFiles] = useState(null);
   const [isReading, setIsReading] = useState(false);
 
   let body;
@@ -24,10 +24,10 @@ function App() {
         <FileReader cancel={() => setIsReading(false)} />
       </span>
     );
-  } else if (sendingFiles) {
+  } else if (sendingFile) {
     body = (
       <span className="sendingPage">
-        <FileSender sendingFiles={sendingFiles} cancel={() => setSendingFiles(null)} />
+        <FileSender file={sendingFile} cancel={() => setSendingFiles(null)} />
       </span>
     );
   } else {

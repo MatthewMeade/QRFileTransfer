@@ -80,6 +80,8 @@ export default function FileReader({ cancel }) {
   );
 }
 
+// Todo: Refactor this
+
 function useInterval(callback, delay) {
   const intervalId = React.useRef(null);
   const savedCallback = React.useRef(callback);
