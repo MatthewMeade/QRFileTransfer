@@ -4,7 +4,7 @@ import FilesDB from "../../FilesDB";
 import { PART_SIZE } from "../fileSender/qrGenerator";
 import { hashBlob } from "../../workers/hashWorker";
 
-export default class FileReader {
+export default class FileBuilder {
   constructor(camRef) {
     this.camRef = camRef;
     this.metaData = null;
@@ -14,8 +14,20 @@ export default class FileReader {
     this.isBusy = false;
   }
 
+  get readPercentage() {
+    return (100 * this.readParts.length) / this.partProgress.length;
+  }
+
   get hasAllParts() {
     return this.partProgress.every((n) => n);
+  }
+
+  get missingParts() {
+    return this.partProgress.reduce((acc, cur, i) => (!cur ? [...acc, i] : acc), []);
+  }
+
+  get readParts() {
+    return this.partProgress.reduce((acc, cur, i) => (cur ? [...acc, i] : acc), []);
   }
 
   finishPart(n) {
@@ -33,7 +45,7 @@ export default class FileReader {
     }
 
     this.fileData = new Uint8ClampedArray(md.size);
-    this.partProgress = new Array(Math.ceil(md.size / PART_SIZE));
+    this.partProgress = new Array(Math.ceil(md.size / PART_SIZE)).fill(false);
 
     this.metaData = md;
 
@@ -69,8 +81,8 @@ export default class FileReader {
     if (partNum === numParts && expectedFinalSize !== size) return;
     if (partNum !== numParts && size !== PART_SIZE) return;
 
-    this.fileData.set(new Uint8ClampedArray(filePart), filePart * PART_SIZE);
-    this.finishpart(partNum);
+    this.fileData.set(new Uint8ClampedArray(filePart), partNum * PART_SIZE);
+    this.finishPart(partNum);
 
     console.log({ partNum, numParts, data });
   }
@@ -94,7 +106,7 @@ export default class FileReader {
     return data;
   }
 
-  async saveToDatabase() {
+  async saveToDatabase(callback) {
     if (!this.hasAllParts) return { err: "NOT READY TO SAVE, NEED MORE PARTS" };
 
     const blob = new Blob([this.fileData.buffer], { type: this.metaData.type, endings: "transparent" });
@@ -109,10 +121,9 @@ export default class FileReader {
     blob.hash = hash;
     blob.name = this.metaData.name;
 
-    console.log("Saving File to DB");
-
     await FilesDB.addFile(blob);
-    console.log("Done!");
+
+    callback();
   }
 
   async scan() {
@@ -135,7 +146,7 @@ export default class FileReader {
       return this.readMetaData();
     }
 
-    this.readFilePart();
+    await this.readFilePart();
   }
 }
 
