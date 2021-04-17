@@ -129,7 +129,7 @@ export default function FileReader({ cancel }) {
   switch (curState) {
     case "METADATA":
     case "PARTS":
-      body = <h3 />;
+      body = null;
       break;
     case "SAVING":
       body = <h2>Saving File</h2>;
