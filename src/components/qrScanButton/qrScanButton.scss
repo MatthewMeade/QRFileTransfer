@@ -17,8 +17,8 @@
 
   &:hover {
     #qrScanButtonContent {
-      border: 5px dashed $secondary;
-      background-color: $highlight;
+      outline: 5px dashed $secondary;
+      background-color: var(--highlight);
 
       svg {
         transform: scale(1.2);

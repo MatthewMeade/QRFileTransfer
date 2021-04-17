@@ -44,7 +44,7 @@ export default function FileUpload() {
     <div id="fileUpload" className={`box--shadow ${isDragging ? "dragging" : "not-dragging"}`}>
       <div
         id="drop_zone"
-        className="box--dashed"
+        className="box"
         onDrop={(e) => onDrop(e)}
         onDragOver={(e) => {
           e.preventDefault();

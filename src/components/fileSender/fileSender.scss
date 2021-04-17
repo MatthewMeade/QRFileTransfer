@@ -15,7 +15,7 @@
   #fsHeader {
     display: grid;
     grid-template-columns: 1fr 5fr 1fr;
-    // border-bottom: 5px dashed $lightgray;
+    // border-bottom: 5px dashed var(--light)gray;
     padding: 0.5em;
     align-items: center;
     font-weight: bold;
@@ -24,7 +24,7 @@
       padding: 1em;
       justify-self: left;
       border-radius: 0.5em;
-      background-color: $white;
+      background-color: var(--white);
       cursor: pointer;
       color: $gray;
       transition: color 0.25s;
@@ -145,18 +145,18 @@
       color: $primary;
       text-decoration: underline;
 
-      background-color: $highlight;
+      background-color: var(--highlight);
     }
 
     &.disabled {
       color: $gray;
-      background-color: $white;
+      background-color: var(--white);
       text-decoration: none;
     }
 
     &.active {
       background-color: $secondary;
-      color: $white;
+      color: var(--white);
     }
   }
 }

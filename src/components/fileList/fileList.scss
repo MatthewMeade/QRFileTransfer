@@ -11,7 +11,7 @@
     column-gap: 10px;
 
     &:hover {
-      background-color: $highlight;
+      background-color: var(--highlight);
     }
 
     @media (max-width: 1000px) {
@@ -130,7 +130,7 @@
 
         svg {
           transition: transform 0.2s, fill 0.2s;
-          border-bottom: 2px dashed $lightgray;
+          border-bottom: 2px dashed var(--light) gray;
         }
 
         &:hover {

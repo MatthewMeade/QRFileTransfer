@@ -9,12 +9,37 @@ import FilesDB from "./FilesDB";
 import FileSender from "./components/fileSender/FileSender";
 import FileReader from "./components/fileReader/FileReader";
 
+import { formatFileSize } from "./components/fileList/FileList";
+
 export const FilesContext = createContext([]);
+
+const colors = {
+  light: {
+    white: "#fff",
+    light: "#e9f3fe",
+    lightgray: "#eee",
+    highlight: "F7FBFF",
+  },
+  dark: {
+    white: "#171717",
+    light: "#111",
+    lightgray: "#333",
+    highlight: "#111",
+  },
+};
 
 function App() {
   const [files, setFiles] = useState([]);
   const [sendingFile, setSendingFiles] = useState(null);
   const [isReading, setIsReading] = useState(false);
+
+  const [theme, setTheme] = useState("dark");
+
+  const totalFileSize = files.reduce((t, { size }) => size + t, 0);
+
+  useEffect(() => {
+    Object.entries(colors[theme]).forEach(([key, val]) => document.body.style.setProperty(`--${key}`, val));
+  }, [theme]);
 
   let body;
 
@@ -33,6 +58,12 @@ function App() {
   } else {
     body = (
       <span className="homePage">
+        <div id="homeHeader">
+          <h1>
+            {files.length} Files ({formatFileSize(totalFileSize)})
+          </h1>
+          <p onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>{theme}</p>
+        </div>
         <FileUpload />
         <QRScanButton startReading={() => setIsReading(true)} />
         <FileList sendFiles={setSendingFiles} />

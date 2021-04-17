@@ -13,13 +13,14 @@
 
     padding-left: 1em;
     padding-right: 1em;
+    box-sizing: border-box;
   }
 
   &.dragging,
   &:hover {
     #drop_zone {
-      border-color: $secondary;
-      background-color: $highlight;
+      outline: 5px dashed $secondary;
+      background-color: var(--highlight);
 
       svg {
         transform: scale(1.2);

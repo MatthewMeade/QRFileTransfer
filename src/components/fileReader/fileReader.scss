@@ -7,7 +7,7 @@
   #frHeader {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    // border-bottom: 5px dashed $lightgray;
+    // border-bottom: 5px dashed var(--light)gray;
     padding: 0.5em;
     align-items: center;
     font-weight: bold;
@@ -16,7 +16,7 @@
       padding: 1em;
       justify-self: left;
       border-radius: 0.5em;
-      background-color: $white;
+      background-color: var(--white);
       cursor: pointer;
       color: $gray;
       transition: color 0.25s;
@@ -89,7 +89,7 @@
       border-radius: 0.25rem;
       background: $secondary;
       width: 50%;
-      color: $white;
+      color: var(--white);
       font-size: 2em;
       line-height: 1.2;
       padding: 0.25rem 0.5rem;
