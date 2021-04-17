@@ -129,7 +129,7 @@ export default function FileReader({ cancel }) {
   switch (curState) {
     case "METADATA":
     case "PARTS":
-      body = null;
+      body = <h3 />;
       break;
     case "SAVING":
       body = <h2>Saving File</h2>;
@@ -162,17 +162,21 @@ export default function FileReader({ cancel }) {
 
       <div id="frBody" className="box--shadow">
         {body}
-        <canvas ref={canvasRef}></canvas>
+        <div id="canvasWrapper">
+          <canvas ref={canvasRef}></canvas>
+        </div>
 
         {curState === "PARTS" && (
-          <span>
-            <button onClick={() => setShowMissing(!showMissing)}>Show Missing Parts</button>
+          <span className="missingWrapper">
+            <button className="missingBtn" onClick={() => setShowMissing(!showMissing)}>
+              {showMissing ? "Hide" : "Show"} Missing Parts
+            </button>
             {showMissing && (
-              <ul>
+              <div className="missingList">
                 {builder.missingParts.map((n) => (
-                  <li key={n}>{n}</li>
+                  <p key={n}>{n}</p>
                 ))}
-              </ul>
+              </div>
             )}
           </span>
         )}
