@@ -1,87 +1,187 @@
-import React, { useRef, useState } from "react";
-import Webcam from "react-webcam";
+import React, { useEffect, useRef, useState } from "react";
 
 import "./fileReader.scss";
 
 import FileBuilder from "./FileBuilder";
+import BackIcon from "../icons/backIcon";
 
-const videoConstraints = {
-  width: 1920,
-  height: 1080,
-};
+import { formatFileSize } from "../fileList/FileList";
 
-export default function FileReader({ cancel }) {
-  const camRef = useRef(null);
-  const builderRef = useRef(new FileBuilder(camRef));
+function cameraTick(builderRef, setState, curState) {
+  const builder = builderRef.current;
 
-  const [curState, setState] = useState("METADATA");
-  const [readPerc, setReadPerc] = useState(0);
-
-  useInterval(() => {
-    const builder = builderRef.current;
-
-    if (builder.isBusy || curState === "SAVING" || curState === "DONE") return;
-
-    if (!builder.metaData) {
-      setState("METADATA");
-      return builder.scan();
-    }
-
-    if (!builder.hasAllParts) {
-      setState("PARTS");
-      return builder.scan().then(() => setReadPerc(builder.readPercentage.toFixed(2)));
-    }
-
+  if (curState === "DONE") {
+    return;
+  }
+  if (!builder.metaData) {
+    setState("METADATA");
+  } else if (builder.hasAllParts) {
     setState("SAVING");
-
     builder.saveToDatabase(() => {
       setState("DONE");
     });
-  }, 250);
+  } else {
+    setState("PARTS");
+  }
 
-  let content;
+  builder.scan();
+}
+
+export default function FileReader({ cancel }) {
+  const [curState, setState] = useState("Init");
+  const [percentage, setPercentage] = useState(0);
+  const [err, setErr] = useState(null);
+  const [showMissing, setShowMissing] = useState(false);
+
+  const videoRef = useRef(document.createElement("video"));
+  const canvasRef = useRef(null);
+  const builderRef = useRef(new FileBuilder(canvasRef));
+
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: false })
+      .then((mStream) => {
+        const video = videoRef.current;
+        video.srcObject = mStream;
+        video.play();
+
+        video.addEventListener("canplay", () => {
+          const canvas = canvasRef.current;
+
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+        });
+      })
+      .catch((err) => {
+        setState("ERROR");
+        setErr("Failed to get camera");
+      });
+  }, []);
+
+  useInterval(() => {
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+    const builder = builderRef.current;
+    if (!canvas || !video) return;
+
+    cameraTick(builderRef, setState, curState);
+
+    if (builder.err) {
+      setState("ERROR");
+      setErr(builder.err);
+    }
+
+    if (percentage !== builder.readPercentage) {
+      setPercentage(builder.readPercentage);
+    }
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(videoRef.current, 0, 0);
+
+    const location = builder.location;
+    if (!location || curState === "DONE") {
+      return;
+    }
+
+    const padding = 5;
+    const { topLeftCorner, bottomRightCorner } = location;
+
+    ctx.strokeStyle = "#1c87ff";
+    ctx.lineJoin = "bevel";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(
+      topLeftCorner.x - padding,
+      topLeftCorner.y - padding,
+      bottomRightCorner.x - topLeftCorner.x + padding * 2,
+      bottomRightCorner.y - topLeftCorner.y + padding * 2
+    );
+  }, 16);
+
+  const builder = builderRef.current;
+  let eText = "";
+  if (builder.metaData) {
+    eText = `${builder.metaData.name} - ${formatFileSize(builder.metaData.size)}`;
+  }
+
+  let header;
   switch (curState) {
     case "METADATA":
-      content = <div className="metadata">Scan Metadata</div>;
+      header = <h2>Scan Meta Data Code</h2>;
       break;
     case "PARTS":
-      content = <div className="parts">Scan Parts: {readPerc}%</div>;
+      header = <h2>Scan File Parts ({percentage.toFixed(0)}%)</h2>;
       break;
     case "SAVING":
-      content = <div className="saving">Saving file to database...</div>;
+      header = <h2>Saving File...</h2>;
       break;
     case "DONE":
-      content = (
-        <div className="done">
-          Done! <span onClick={() => cancel()}>Click here to return to file list</span>
-        </div>
-      );
+      header = <h2>Done!</h2>;
+      break;
+    case "ERROR":
+      header = <h2>Error!</h2>;
       break;
     default:
+      header = <h2>Unknown State</h2>;
       break;
   }
 
+  let body;
+  switch (curState) {
+    case "METADATA":
+    case "PARTS":
+      body = null;
+      break;
+    case "SAVING":
+      body = <h2>Saving File</h2>;
+      break;
+    case "DONE":
+      body = <h2 onClick={() => cancel()}>Return to file list</h2>;
+      break;
+    case "ERROR":
+      body = (
+        <span>
+          <p>{err}</p>
+        </span>
+      );
+      break;
+    default:
+      body = <h2>Unknown State</h2>;
+      break;
+  }
   return (
-    <div id="fileReader" className="box--shadow">
-      <button onClick={() => cancel()}>Go Back</button>
+    <div id="fileReader">
+      <div id="frHeader" className="box--shadow">
+        <span onClick={() => cancel()} className="btn">
+          <BackIcon /> Back
+        </span>
 
-      <br />
-      <Webcam
-        audio={false}
-        imageSmoothing={false}
-        ref={camRef}
-        videoConstraints={videoConstraints}
-        width={videoConstraints.width}
-        height={videoConstraints.height}
-      />
+        {header}
 
-      {content}
+        <p className="statusText">{eText}</p>
+      </div>
+
+      <div id="frBody" className="box--shadow">
+        {body}
+        <canvas ref={canvasRef}></canvas>
+
+        {curState === "PARTS" && (
+          <span>
+            <button onClick={() => setShowMissing(!showMissing)}>Show Missing Parts</button>
+            {showMissing && (
+              <ul>
+                {builder.missingParts.map((n) => (
+                  <li key={n}>{n}</li>
+                ))}
+              </ul>
+            )}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
 
 // Todo: Refactor this
-
 function useInterval(callback, delay) {
   const intervalId = React.useRef(null);
   const savedCallback = React.useRef(callback);

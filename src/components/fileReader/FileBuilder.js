@@ -5,8 +5,8 @@ import { PART_SIZE } from "../fileSender/qrGenerator";
 import { hashBlob } from "../../workers/hashWorker";
 
 export default class FileBuilder {
-  constructor(camRef) {
-    this.camRef = camRef;
+  constructor(canvasRef) {
+    this.canvasRef = canvasRef;
     this.metaData = null;
     this.fileData = null;
     this.partProgress = [false];
@@ -41,7 +41,7 @@ export default class FileBuilder {
     }
 
     if (await FilesDB.getFileMetaDataByID(md.id)) {
-      this.err = "FILE_EXISTS";
+      this.err = "File already exists";
     }
 
     this.fileData = new Uint8ClampedArray(md.size);
@@ -88,12 +88,15 @@ export default class FileBuilder {
   }
 
   async readImage(asJson) {
-    const canvas = this.camRef.current.getCanvas();
-    if (!canvas) return null;
+    const canvas = this.canvasRef.current;
+    if (!canvas || canvas.width === 0) return null;
+
     const { width, height } = canvas;
     const pixels = canvas.getContext("2d").getImageData(0, 0, width, height);
 
     const data = await jsQR(pixels.data, width, height);
+
+    this.location = data?.location;
 
     if (asJson) {
       try {
@@ -107,6 +110,7 @@ export default class FileBuilder {
   }
 
   async saveToDatabase(callback) {
+    this.isBusy = true;
     if (!this.hasAllParts) return { err: "NOT READY TO SAVE, NEED MORE PARTS" };
 
     const blob = new Blob([this.fileData.buffer], { type: this.metaData.type, endings: "transparent" });
@@ -123,14 +127,12 @@ export default class FileBuilder {
 
     await FilesDB.addFile(blob);
 
+    this.isBusy = false;
     callback();
   }
 
   async scan() {
     if (this.isBusy) return "IS BUSY";
-    if (this.err) return this.err;
-    if (!this.camRef.current) return "CAMERA NOT READY";
-    if (this.hasAllParts) return "ALL PARTS READ";
 
     this.isBusy = true;
 

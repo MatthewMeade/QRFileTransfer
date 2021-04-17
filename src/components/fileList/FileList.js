@@ -96,7 +96,7 @@ function downloadFile(file) {
 }
 
 const words = ["B", "KB", "MB", "GB"];
-function formatFileSize(size = 0) {
+export function formatFileSize(size = 0) {
   let cur = 0;
   while (size >= 1000) {
     size /= 1000;
