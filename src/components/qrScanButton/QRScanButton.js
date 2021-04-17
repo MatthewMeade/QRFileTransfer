@@ -6,7 +6,7 @@ import QRCodeIcon from "../icons/qrCode";
 export default function FileUpload({ startReading }) {
   return (
     <div id="qrScanButton" className={`box--shadow`} onClick={startReading}>
-      <div id="qrScanButtonContent" className="box--dashed">
+      <div id="qrScanButtonContent" className="box">
         <QRCodeIcon />
 
         <h2>Revieve files</h2>
