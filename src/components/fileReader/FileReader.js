@@ -40,7 +40,7 @@ export default function FileReader({ cancel }) {
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: false, facingMode })
+      .getUserMedia({ video: { facingMode: facingMode }, audio: false })
       .then((mStream) => {
         const video = videoRef.current;
         video.srcObject = mStream;
@@ -130,7 +130,9 @@ export default function FileReader({ cancel }) {
   switch (curState) {
     case "METADATA":
     case "PARTS":
-      body = <h2 onClick={() => setFacing(facingMode === "user" ? "environment" : "user")}>Switch Camera</h2>;
+      body = navigator.mediaDevices.getSupportedConstraints()["facingMode"] ? (
+        <h2 onClick={() => setFacing(facingMode === "user" ? "environment" : "user")}>Switch Camera</h2>
+      ) : null;
       break;
     case "SAVING":
       body = <h2>Saving File</h2>;
