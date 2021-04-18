@@ -9,7 +9,7 @@ export default function FileUpload({ startReading }) {
       <div id="qrScanButtonContent" className="box">
         <QRCodeIcon />
 
-        <h2>Revieve files</h2>
+        <h2>receive files</h2>
         <p>Transfer files from another device</p>
       </div>
     </div>
