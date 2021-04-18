@@ -33,13 +33,14 @@ function App() {
   const [sendingFile, setSendingFiles] = useState(null);
   const [isReading, setIsReading] = useState(false);
 
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") ?? "dark");
 
   const totalFileSize = files.reduce((t, { size }) => size + t, 0);
 
   useEffect(() => {
+    localStorage.setItem("theme", theme);
     Object.entries(colors[theme ?? "dark"]).forEach(([key, val]) => document.body.style.setProperty(`--${key}`, val));
-    document.body.classList.add("loaded");
+    document.body.classList.add("loaded"); // Enables animating between themes after initial theme is set
   }, [theme]);
 
   let body;

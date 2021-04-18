@@ -31,4 +31,4 @@ const reportWebVitals = (onPerfEntry) => {
   }
 };
 
-reportWebVitals(console.log);
+// reportWebVitals(console.log);
