@@ -96,7 +96,7 @@ export default function FileReader({ cancel }) {
       bottomRightCorner.x - topLeftCorner.x + padding * 2,
       bottomRightCorner.y - topLeftCorner.y + padding * 2
     );
-  }, 16);
+  }, 33);
 
   const builder = builderRef.current;
   let eText = "";
