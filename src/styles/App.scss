@@ -23,7 +23,7 @@ body {
     color: $gray;
 
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto min-content;
     align-content: center;
 
     h1,
@@ -49,6 +49,7 @@ body {
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
 
+    #homeHeader,
     #fileList {
       grid-column: 1;
     }

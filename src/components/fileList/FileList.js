@@ -32,21 +32,6 @@ export default function FileList({ sendFiles }) {
 function FileListItem({ file, sendFiles }) {
   const date = new Date(file.timestamp);
 
-  let fileName = file.name;
-
-  // TODO: support resizing this when there is more/less room
-  if (fileName.length >= 35) {
-    const parts = fileName.split(".");
-
-    let ext = parts.slice(-1)[0];
-    if (ext.length > 4) {
-      ext = "";
-    }
-
-    const firstPart = fileName.slice(0, 35 - 3 - ext.length);
-    fileName = `${firstPart}...${ext}`;
-  }
-
   const [type1, type2] = file.type.split("/");
   const type3 = type2?.split(".").slice(-1)[0];
   const type4 = type3?.split("-").slice(-1)[0];
@@ -57,7 +42,7 @@ function FileListItem({ file, sendFiles }) {
       <span className="icon">
         <FileTypeIcon type={file.type} />
       </span>
-      <h3>{fileName}</h3>
+      <h3>{file.name}</h3>
 
       <span className="fileSize">{formatFileSize(file.size)}</span>
 

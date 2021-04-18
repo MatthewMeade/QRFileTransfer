@@ -13,6 +13,18 @@ $lightgray: #eee;
 $gray: #aaa;
 $highlight: lighten($primary, 43%);
 
+.loaded * {
+  // Don't animate theme changes until after initial load to prevent flashing
+  transition: color 0.2s, background-color 0.2s;
+}
+
+body {
+  --white: #171717;
+  --light: #111;
+  --lightgray: #333;
+  --highlight: #111;
+}
+
 // Dark Mode
 // $white: #171717;
 // $light: #111;

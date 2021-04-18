@@ -111,9 +111,11 @@ export default function FileSender({ file, cancel }) {
         {!curCode && <p className="statusText">Initializing...</p>}
       </div>
 
-      <div className="box--shadow qrContainer">
+      <div className="box--shadow senderBody">
         {curCodeIndex === -1 && <p>Meta Data:</p>}
-        <img src={curCode} alt="Should be a QR code here" />
+        <div id="imgWrapper">
+          <img src={curCode} alt="Should be a QR code here" />
+        </div>
         {controlsElem}
 
         {curCodeIndex >= 0 && (

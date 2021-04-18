@@ -12,6 +12,14 @@
     align-items: center;
     font-weight: bold;
 
+    @media (max-width: 1000px) {
+      grid-template-columns: 1fr;
+
+      .statusText {
+        justify-self: center !important;
+      }
+    }
+
     .btn {
       padding: 1em;
       justify-self: left;
@@ -88,7 +96,8 @@
       border: 0;
       border-radius: 0.25rem;
       background: $secondary;
-      width: 50%;
+      max-width: 400px;
+      width: 100%;
       color: var(--white);
       font-size: 2em;
       line-height: 1.2;

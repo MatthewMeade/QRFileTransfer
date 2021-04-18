@@ -38,7 +38,8 @@ function App() {
   const totalFileSize = files.reduce((t, { size }) => size + t, 0);
 
   useEffect(() => {
-    Object.entries(colors[theme]).forEach(([key, val]) => document.body.style.setProperty(`--${key}`, val));
+    Object.entries(colors[theme ?? "dark"]).forEach(([key, val]) => document.body.style.setProperty(`--${key}`, val));
+    document.body.classList.add("loaded");
   }, [theme]);
 
   let body;
