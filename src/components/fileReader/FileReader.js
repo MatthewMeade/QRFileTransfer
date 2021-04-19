@@ -7,6 +7,8 @@ import BackIcon from "../icons/backIcon";
 
 import { formatFileSize } from "../fileList/FileList";
 
+const MAX_IMAGE_WIDTH = 500;
+
 function cameraTick(builderRef, setState, curState) {
   const builder = builderRef.current;
 
@@ -32,7 +34,6 @@ export default function FileReader({ cancel }) {
   const [percentage, setPercentage] = useState(0);
   const [err, setErr] = useState(null);
   const [showMissing, setShowMissing] = useState(false);
-  const [facingMode, setFacing] = useState("environment");
 
   const videoRef = useRef(document.createElement("video"));
   const canvasRef = useRef(null);
@@ -40,7 +41,7 @@ export default function FileReader({ cancel }) {
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: facingMode }, audio: false })
+      .getUserMedia({ video: { facingMode: "environment" }, audio: false })
       .then((mStream) => {
         const video = videoRef.current;
         video.srcObject = mStream;
@@ -49,15 +50,25 @@ export default function FileReader({ cancel }) {
         video.addEventListener("canplay", () => {
           const canvas = canvasRef.current;
 
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
+          let scaleRatio = video.videoWidth / MAX_IMAGE_WIDTH;
+
+          if (scaleRatio < 1) {
+            scaleRatio = 1;
+          }
+
+          canvas.width = video.videoWidth / scaleRatio;
+          canvas.height = video.videoHeight / scaleRatio;
         });
       })
       .catch((err) => {
         setState("ERROR");
         setErr("Failed to get camera");
       });
-  }, [facingMode]);
+  });
+
+  // useInterval(() => {
+
+  // }, 33);
 
   useInterval(() => {
     const canvas = canvasRef.current;
@@ -77,7 +88,7 @@ export default function FileReader({ cancel }) {
     }
 
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(videoRef.current, 0, 0);
+    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
     const location = builder.location;
     if (!location || curState === "DONE") {
@@ -130,9 +141,7 @@ export default function FileReader({ cancel }) {
   switch (curState) {
     case "METADATA":
     case "PARTS":
-      body = navigator.mediaDevices.getSupportedConstraints()["facingMode"] ? (
-        <h2 onClick={() => setFacing(facingMode === "user" ? "environment" : "user")}>Switch Camera</h2>
-      ) : null;
+      body = null;
       break;
     case "SAVING":
       body = <h2>Saving File</h2>;
