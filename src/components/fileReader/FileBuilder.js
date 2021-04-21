@@ -1,8 +1,8 @@
-import jsQR from "jsqr";
-
 import FilesDB from "../../FilesDB";
 import { PART_SIZE } from "../fileSender/qrGenerator";
 import { hashBlob } from "../../workers/hashWorker";
+
+import { scanImage } from "../../workers/scanWorker";
 
 export default class FileBuilder {
   constructor(canvasRef) {
@@ -94,7 +94,7 @@ export default class FileBuilder {
     const { width, height } = canvas;
     const pixels = canvas.getContext("2d").getImageData(0, 0, width, height);
 
-    const data = await jsQR(pixels.data, width, height);
+    const data = await scanImage(pixels.data, width, height);
 
     this.location = data?.location;
 
@@ -110,6 +110,10 @@ export default class FileBuilder {
   }
 
   async saveToDatabase(callback) {
+    if (this.busy) {
+      return;
+    }
+
     this.isBusy = true;
     if (!this.hasAllParts) return { err: "NOT READY TO SAVE, NEED MORE PARTS" };
 

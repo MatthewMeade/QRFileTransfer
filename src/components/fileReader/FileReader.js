@@ -64,7 +64,7 @@ export default function FileReader({ cancel }) {
         setState("ERROR");
         setErr("Failed to get camera");
       });
-  });
+  }, []);
 
   // useInterval(() => {
 

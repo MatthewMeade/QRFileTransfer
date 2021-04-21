@@ -1,5 +1,5 @@
-import hashWorker from "worker-loader!./hashWorker.js"; //eslint-disable-line
-import { hashArrayBuffer } from "./util";
+import hashWorker from "worker-loader!../worker.js"; //eslint-disable-line
+import { hashArrayBuffer } from "../util";
 
 const workerPool = [];
 
@@ -9,6 +9,7 @@ const MAX_WORKERS = 10;
 const MAX_FINISHED_WORKER_AGE = 1000 * 60;
 let createdWorkers = 0;
 
+// TODO: Refactor wrapper class
 class WorkerWrapper {
   constructor() {
     this.worker = new hashWorker();
@@ -31,7 +32,7 @@ class WorkerWrapper {
   postMessage(message, pass) {
     clearTimeout(this.killTimeout);
 
-    this.worker.postMessage(message, pass);
+    this.worker.postMessage({ message, type: "hash" }, pass);
     return new Promise((resolve) => {
       this.resolveFn = (hash) => resolve(hash);
     });
