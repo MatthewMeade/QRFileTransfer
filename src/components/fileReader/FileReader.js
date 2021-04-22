@@ -45,6 +45,10 @@ export default function FileReader({ cancel }) {
       .then((mStream) => {
         const video = videoRef.current;
         video.srcObject = mStream;
+        
+        video.setAttribute("autoplay", "");
+        video.setAttribute("muted", "");
+        video.setAttribute("playsinline", "");
         video.play();
 
         video.addEventListener("canplay", () => {
