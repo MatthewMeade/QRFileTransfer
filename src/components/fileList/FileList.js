@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import streamSaver from "streamsaver";
+import { saveAs } from "file-saver";
 
 import "./fileList.scss";
 
@@ -66,17 +66,20 @@ function FileListItem({ file, sendFiles }) {
 
 function downloadFile(file) {
   FilesDB.getFileByID(file.id).then(({ data }) => {
-    const fileStream = streamSaver.createWriteStream(file.name, {
-      size: file.size,
-    });
+    //   const fileStream = streamSaver.createWriteStream(file.name, {
+    //     size: file.size,
+    //   });
 
-    data
-      .stream()
-      .pipeTo(fileStream)
-      .then((...all) => {
-        console.log(all);
-      })
-      .catch((e) => console.log(e));
+    //   data
+    //     .stream()
+    //     .pipeTo(fileStream)
+    //     .then((...all) => {
+    //       console.log(all);
+    //     })
+    //     .catch((e) => console.log(e));
+    // });
+
+    saveAs(data, file.name);
   });
 }
 
