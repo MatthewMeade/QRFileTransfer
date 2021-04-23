@@ -46,7 +46,11 @@ export default function FileSender({ file, cancel }) {
     if (isAutoRunning) {
       nextCode();
     }
+<<<<<<< HEAD
   }, 150);
+=======
+  }, 250);
+>>>>>>> b479110c54ea095dcb5e5cfc676495914a137ee8
 
   const controls = [];
 
