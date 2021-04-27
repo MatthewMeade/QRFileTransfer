@@ -12,6 +12,10 @@
   display: grid;
   gap: 1em;
 
+  // @media (max-width: 500px) {
+  //   padding: 0;
+  // }
+
   #fsHeader {
     display: grid;
     grid-template-columns: 1fr 5fr 1fr;
@@ -67,10 +71,17 @@
 
     text-align: center;
 
+    @media (max-width: 500px) {
+      grid-template-columns: 100%;
+      padding: 0 !important;
+    }
+
     #imgWrapper {
       max-height: 75vh;
       width: 100%;
       height: 100%;
+
+      padding-top: 10px;
 
       img {
         object-fit: contain;

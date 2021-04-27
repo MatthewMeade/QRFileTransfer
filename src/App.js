@@ -64,7 +64,9 @@ function App() {
           <h1>
             {files.length} Files ({formatFileSize(totalFileSize)})
           </h1>
-          <p onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>{theme}</p>
+          <p className="themeToggle" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+            {theme}
+          </p>
         </div>
         <FileUpload />
         <QRScanButton startReading={() => setIsReading(true)} />

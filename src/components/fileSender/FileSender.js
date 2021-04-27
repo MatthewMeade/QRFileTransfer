@@ -123,7 +123,7 @@ export default function FileSender({ file, cancel }) {
             className={`auto button ${isAutoRunning ? "active" : "disabled"}`}
             onClick={() => setAuto(!isAutoRunning)}
           >
-            {isAutoRunning ? "Stop" : "Start"} Auto Next
+            {isAutoRunning ? "Stop" : ""} Auto Next
           </span>
         )}
 

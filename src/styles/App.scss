@@ -26,6 +26,17 @@ body {
     grid-template-columns: auto min-content;
     align-content: center;
 
+    @media (max-width: 500px) {
+      grid-template-columns: auto;
+
+      h1,
+      p.themeToggle {
+        justify-self: center;
+        align-self: center;
+        text-align: center;
+      }
+    }
+
     h1,
     p {
       padding: 0;
