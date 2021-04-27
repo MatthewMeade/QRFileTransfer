@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { useContext } from "react";
 import { saveAs } from "file-saver";
 
@@ -50,7 +51,7 @@ function FileListItem({ file, sendFiles }) {
       <span className="type">{type.toUpperCase()}</span>
 
       <span className="buttons">
-        <span onClick={() => FilesDB.deleteFile(file.id)}>
+        <span onClick={() => confirm(`Are you sure you want to delete ${file.name} ?`) && FilesDB.deleteFile(file.id)}>
           <DeleteIcon />
         </span>
         <span onClick={() => downloadFile(file)}>

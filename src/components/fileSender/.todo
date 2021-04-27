@@ -1,5 +1,0 @@
-- Add modals for information and confirmation
-- Prevent large files
-  - Deny files > 2GB
-  - Warn files > 25KB
-- Add version number on build
