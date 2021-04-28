@@ -71,6 +71,16 @@ function App() {
         <FileUpload />
         <QRScanButton startReading={() => setIsReading(true)} />
         <FileList sendFiles={setSendingFiles} />
+
+        <footer id="footer">
+          <p>
+            Build Version: {process.env.REACT_APP_BUILD_VERSION} <span>({process.env.REACT_APP_BUILD_DATE})</span>
+          </p>
+
+          <p>
+            <a href="https://MatthewMeade.ca">MatthewMeade.ca</a>
+          </p>
+        </footer>
       </span>
     );
   }
