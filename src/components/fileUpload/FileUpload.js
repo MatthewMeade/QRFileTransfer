@@ -5,6 +5,25 @@ import FileUploadIcon from "../icons/fileUpload";
 
 import FilesDB from "../../FilesDB";
 
+const MAX_FILE_SIZE = 1e7; // 1 MB
+const WARN_FILE_SIZE = 50000; // 50 KB
+
+const validateFileSize = (files) => {
+  if (files.some((f) => f.size > MAX_FILE_SIZE)) {
+    alert("Maximum file size is 1 MB");
+    return false;
+  }
+
+  if (files.some((f) => f.size > WARN_FILE_SIZE)) {
+    // eslint-disable-next-line no-restricted-globals
+    return confirm(
+      "One or more of the attached files is very large (> 50 KB).\nThis file will take a long time to transfer"
+    );
+  }
+
+  return true;
+};
+
 export default function FileUpload() {
   const input = useRef(null);
 
@@ -17,6 +36,10 @@ export default function FileUpload() {
 
     element.onchange = (e) => {
       const files = [...e.target.files];
+
+      if (!validateFileSize(files)) {
+        return;
+      }
       FilesDB.addFiles(files);
     };
 
@@ -34,7 +57,11 @@ export default function FileUpload() {
     if (event.dataTransfer.items) {
       files = [...event.dataTransfer.items].filter((f) => f.kind === "file").map((f) => f.getAsFile());
     } else {
-      files = [...event.dataTransfer.files49oo].filter((f) => f.kind === "file").map((f) => f.getAsFile());
+      files = [...event.dataTransfer.files].filter((f) => f.kind === "file").map((f) => f.getAsFile());
+    }
+
+    if (!validateFileSize(files)) {
+      return;
     }
 
     FilesDB.addFiles(files);

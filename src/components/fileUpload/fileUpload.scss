@@ -3,6 +3,12 @@
 #fileUpload {
   text-align: center;
 
+  @media (max-width: 500px) {
+    #drop_zone {
+      padding: 0;
+    }
+  }
+
   #drop_zone {
     svg {
       fill: $primary;

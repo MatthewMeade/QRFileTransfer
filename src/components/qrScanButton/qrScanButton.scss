@@ -3,6 +3,12 @@
 #qrScanButton {
   text-align: center;
 
+  @media (max-width: 500px) {
+    #qrScanButtonContent {
+      padding: 0;
+    }
+  }
+
   #qrScanButtonContent {
     svg {
       fill: $primary;

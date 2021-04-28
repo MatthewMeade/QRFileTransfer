@@ -26,6 +26,17 @@ body {
     grid-template-columns: auto min-content;
     align-content: center;
 
+    @media (max-width: 500px) {
+      grid-template-columns: auto;
+
+      h1,
+      p.themeToggle {
+        justify-self: center;
+        align-self: center;
+        text-align: center;
+      }
+    }
+
     h1,
     p {
       padding: 0;
@@ -50,8 +61,39 @@ body {
     grid-template-columns: 1fr;
 
     #homeHeader,
-    #fileList {
+    #fileList,
+    #footer {
       grid-column: 1;
     }
+
+    #footer {
+      grid-template-columns: auto;
+    }
   }
+}
+
+footer {
+  grid-column: 1 / span 2;
+  display: grid;
+  grid-template-columns: auto auto;
+
+  p {
+    text-align: center;
+  }
+
+  span {
+    display: inline-block;
+  }
+
+  p,
+  a,
+  a:hover,
+  a:visited {
+    color: $primary;
+    text-decoration: none;
+  }
+}
+
+pre {
+  color: white;
 }
